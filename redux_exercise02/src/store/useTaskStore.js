@@ -4,7 +4,7 @@ import create from 'zustand';
 import axios from 'axios';
 
 // Zustand 상태를 생성합니다.
-const useTaskStore = create((set) => ({
+const useTaskStore = create((set, get) => ({
     tasks: [], // 작업의 초기 상태입니다.
     filter: 'ALL', // 필터 상태입니다.
     isLoading: false, // 로딩 상태입니다.
@@ -69,16 +69,18 @@ const useTaskStore = create((set) => ({
     setFilter: (filter) => set({ filter }),
 
     // 현재 필터에 따라 표시할 작업을 반환하는 선택자 함수입니다.
-    filteredTasks: (state) => {
-        switch (state.filter) {
-        case 'COMPLETED':
-            return state.tasks.filter(task => task.completed);
-        case 'INCOMPLETE':
-            return state.tasks.filter(task => !task.completed);
-        default:
-            return state.tasks;
+    filteredTasks: () => {
+        const { tasks, filter } = get();
+        if (!tasks) return []; // tasks가 undefined인 경우 빈 배열을 반환합니다.
+        switch (filter) {
+            case 'COMPLETED':
+                return tasks.filter((task) => task.completed);
+            case 'INCOMPLETE':
+                return tasks.filter((task) => !task.completed);
+            default:
+                return tasks;
         }
-    }
+    },
 }));
-
+    
 export default useTaskStore;

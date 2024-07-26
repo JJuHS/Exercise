@@ -21,12 +21,16 @@ function TaskList() {
     // 에러가 발생했을 때 ErrorNotification 컴포넌트를 렌더링합니다.
     if (error) return <ErrorNotification message={error} />;
 
+    const tasksToRender = filteredTasks();
+
     return (
         <div>
         {/* filteredTasks를 사용하여 필터링된 작업을 렌더링합니다. */}
-        {filteredTasks().map(task => (
-            <TaskItem key={task.id} task={task} />
-        ))}
+        {tasksToRender.length > 0 ? (
+            tasksToRender.map((task) => <TaskItem key={task.id} task={task} />)
+        ) : (
+            <p>No tasks available.</p>
+        )}
         </div>
     );
 }

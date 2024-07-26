@@ -9,11 +9,8 @@ function App() {
   return (
     <div>
       <h1>Advanced Task Management App with Zustand</h1>
-      {/* FilterForm 컴포넌트를 렌더링합니다. */}
       <FilterForm />
-      {/* TaskForm 컴포넌트를 렌더링합니다. */}
       <TaskForm />
-      {/* TaskList 컴포넌트를 렌더링합니다. */}
       <TaskList />
     </div>
   );
