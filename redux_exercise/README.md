@@ -138,3 +138,191 @@ export default Counter;
 ```
 
 <h3><strong>(2) Zustand 활용하기</strong></h3>
+
+Zustand를 활용해서 간단한 Todo App을 만들어보겠습니다.
+
+비동기작업을 위해 Axios라이브러리를 받아줍니다.
+
+```bash
+npm i axios
+yarn add axios
+```
+
+우선 다음과 같은 폴더구조를 만들어줍니다.
+
+```
+src/
+├── node_modules
+├── public
+├── components/
+│   ├── TodoList.jsx
+│   ├── TodoItem.jsx
+│   └── TodoForm.jsx
+├── store/
+│   └── useTodoStore.js
+├── App.jsx
+└── index.js
+```
+
+App.jsx에 todo리스트를 입력받는 폼 컴포넌트와 todo리스트 목록을 출력하게 해주는 컴포넌트를 렌더링합니다.
+
+```javascript
+// App.js
+import React from 'react';
+import TodoList from './components/TodoList.jsx'
+import TodoForm from './components/TodoForm.jsx'
+
+function App() {
+  return (
+    <div className="App">
+      <TodoForm />
+      <TodoList />
+    </div>
+  );
+}
+
+export default App;
+```
+
+상태관리 Store부터 만들어봅시다.
+[jsonplaceholder페이지](https://jsonplaceholder.typicode.com/todos) 에서 초기 할일 목록을 가져오겠습니다.
+
+```javascript
+// src/store/useTodoStore.js
+import create from 'zustand';
+import axios from 'axios';
+
+// Zustand 상태를 생성
+const useTodoStore = create((set) => ({
+    // todos 배열의 초기 상태
+    todos: [],
+    
+    // 비동기 작업을 수행하여 todos 상태를 업데이트
+    fetchTodos: async () => {
+    try {
+      const response = await axios.get('https://jsonplaceholder.typicode.com/todos?_limit=5');
+      set({ todos: response.data });
+    } catch (error) {
+      console.error('Failed to fetch todos:', error);
+    }
+  },
+    
+    // 새로운 todo를 추가하는 함수
+    addTodo: (title) => set((state) => ({
+        todos: [...state.todos, { id: state.todos.length + 1, title, completed: false }]
+    })),
+    
+    // 특정 todo를 삭제하는 함수
+    deleteTodo: (id) => set((state) => ({
+        todos: state.todos.filter(todo => todo.id !== id)
+    })),
+    
+    // 특정 todo의 완료 상태를 토글하는 함수
+    toggleTodo: (id) => set((state) => ({
+        todos: state.todos.map(todo => 
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+        )
+    })),
+}));
+
+export default useTodoStore;
+```
+
+함수와 상태를 모두 만들었으니, 각 컴포넌트 별로 사용해주겠습니다.
+
+TodoItem 컴포넌트
+```jsx
+// src/components/TodoItem.jsx
+
+import React from 'react';
+import useTodoStore from '../store/useTodoStore';
+
+function TodoItem({ todo }) {
+    // useTodoStore 훅을 사용하여 상태 업데이트 함수를 가져옵니다.
+    const { deleteTodo, toggleTodo } = useTodoStore();
+    
+    return (
+      <div>
+        <input 
+          type="checkbox" 
+          checked={todo.completed} 
+          onChange={() => toggleTodo(todo.id)} 
+        />
+        <span style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
+          {todo.title}
+        </span>
+        <button onClick={() => deleteTodo(todo.id)}>Delete</button>
+      </div>
+    );
+}
+
+export default TodoItem;
+```
+
+TodoList 컴포넌트
+
+```jsx
+// src/components/TodoList.jsx
+
+import React, { useEffect } from 'react';
+import useTodoStore from '../store/useTodoStore';
+import TodoItem from './TodoItem';
+
+function TodoList() {
+  // useTodoStore 훅을 사용하여 상태와 함수를 가져옵니다.
+  const { todos, fetchTodos } = useTodoStore();
+  
+  // 컴포넌트가 마운트될 때 todos를 가져옵니다.
+  useEffect(() => {
+    fetchTodos();
+  }, [fetchTodos]);
+
+  return (
+    <div>
+      {/* todos 배열을 순회하여 TodoItem 컴포넌트를 렌더링합니다. */}
+      {todos.map(todo => (
+        <TodoItem key={todo.id} todo={todo} />
+      ))}
+    </div>
+  );
+}
+
+export default TodoList;
+
+```
+
+TodoForm 컴포넌트
+```jsx
+// src/components/TodoForm.jsx
+
+import React, { useState } from 'react';
+import useTodoStore from '../store/useTodoStore';
+
+function TodoForm() {
+  // 입력값을 저장하는 로컬 상태를 생성
+  const [title, setTitle] = useState('');
+  // useTodoStore 훅을 사용하여 addTodo 함수를 가져옵니다.
+  const addTodo = useTodoStore((state) => state.addTodo);
+
+  // 폼 제출 시 새로운 todo를 추가하고 입력값을 초기화
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    addTodo(title);
+    setTitle('');
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input 
+        type="text" 
+        value={title} 
+        onChange={(e) => setTitle(e.target.value)} 
+        placeholder="Add a new todo" 
+      />
+      <button type="submit">Add</button>
+    </form>
+  );
+}
+
+export default TodoForm;
+```
