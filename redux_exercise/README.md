@@ -1,5 +1,3 @@
-- 기본활용법 코드는 없습니다.
-
 # REACT에서 Store관리하기
 
 # Zustand 를 사용해서 Store 관리하기
