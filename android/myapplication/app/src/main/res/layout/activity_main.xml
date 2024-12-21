@@ -5,15 +5,87 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     tools:context=".MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/questionTextView"
+        android:layout_width="395dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="44dp"
+        android:gravity="center"
+        android:text="TextView"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/totalCorrectTestView"
+        android:layout_width="333dp"
+        android:layout_height="28dp"
+        android:gravity="center"
+        android:text="TextView"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteX="39dp"
+        tools:layout_editor_absoluteY="196dp" />
+
+    <Button
+        android:id="@+id/example1Button"
+        android:layout_width="174dp"
+        android:layout_height="114dp"
+        android:layout_marginTop="96dp"
+        android:background="#8D4444"
+        android:onClick="example1ButtonClicked"
+        android:text="Button"
+        android:textSize="24sp"
+        app:layout_constraintTop_toBottomOf="@+id/totalCorrectTestView"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <Button
+        android:id="@+id/example3Button"
+        android:layout_width="174dp"
+        android:layout_height="114dp"
+        android:layout_marginTop="32dp"
+        android:background="#8D4444"
+        android:onClick="example3ButtonClicked"
+        android:text="Button"
+        android:textSize="24sp"
+        app:layout_constraintTop_toBottomOf="@+id/example1Button"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <Button
+        android:id="@+id/example4Button"
+        android:layout_width="174dp"
+        android:layout_height="114dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="32dp"
+        android:background="#8D4444"
+        android:onClick="example4ButtonClicked"
+        android:text="Button"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/example3Button"
+        app:layout_constraintTop_toBottomOf="@+id/example2Button" />
+
+    <Button
+        android:id="@+id/example2Button"
+        android:layout_width="174dp"
+        android:layout_height="114dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="96dp"
+        android:background="#8D4444"
+        android:onClick="example2ButtonClicked"
+        android:text="Button"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/example1Button"
+        app:layout_constraintTop_toBottomOf="@+id/totalCorrectTestView" />
+
+    <TextView
+        android:id="@+id/correctIncorrectTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="183dp"
+        tools:layout_editor_absoluteY="127dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
